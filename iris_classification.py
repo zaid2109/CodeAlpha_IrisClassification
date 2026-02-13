@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -152,6 +152,13 @@ print(f"\n=== Detailed Evaluation - {best_model_name} ===")
 best_model = models[best_model_name]
 best_predictions = predictions[best_model_name]
 
+# Cross-validation for the best model
+print(f"\n=== Cross-Validation - {best_model_name} ===")
+scores = cross_val_score(best_model, X_train_scaled, y_train, cv=5)
+print("CV Accuracy:", scores.mean())
+print("CV Scores:", scores)
+print("CV Standard Deviation:", scores.std())
+
 # Classification report
 print("\nClassification Report:")
 print(classification_report(y_test, best_predictions, target_names=le.classes_))
@@ -226,6 +233,8 @@ print(f"\n=== Summary ===")
 print(f"- Dataset: {df.shape[0]} samples, {df.shape[1]-1} features, 3 classes")
 print(f"- Best model: {best_model_name}")
 print(f"- Test accuracy: {best_accuracy:.4f} ({best_accuracy*100:.2f}%)")
+print(f"- Cross-validation accuracy: {scores.mean():.4f} ({scores.mean()*100:.2f}%)")
+print(f"- CV Standard Deviation: {scores.std():.4f}")
 print(f"- Classes: {', '.join(le.classes_)}")
 print("\nFiles generated:")
 print("- iris_analysis.png: Data visualization plots")
